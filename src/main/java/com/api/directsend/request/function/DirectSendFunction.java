@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 
 @Component  /*bean 등록*/
-public class DirectSendFunction implements Function<DirectSendRequest, Boolean> {
+public class DirectSendFunction implements Function<DirectSendRequest, String> {
 
     @Override
-    public Boolean apply(DirectSendRequest request){/*상속받은 인터페이스에 따라 return 객체가 다름*/
+    public String apply(DirectSendRequest request){/*상속받은 인터페이스에 따라 return 객체가 다름*/
         // 받아온 DirectSendRequest에서 값 추출
         String receiver = request.getMobile();
         String message = request.getMessage();

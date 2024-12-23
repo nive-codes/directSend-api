@@ -8,23 +8,25 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DirectSendFunctionTest {
+class DirectSendServiceTest {
 
     @Test
     public void testSendNowSMS(){
         // 테스트할 파라미터 설정
         String receiver = "01012341234";
-        String sender = "0212341234";
+        String sender = "01012341234";
         String title = "";
-        String message = "This is test message.";
+        String message = "Thisisatestmessage.";
         String apiId = "test";  // 실제 API ID를 사용해야 합니다.
-        String apiKey = "Test";  // 실제 API Key를 사용해야 합니다.
+        String apiKey = "test";  // 실제 API Key를 사용해야 합니다.
 
         // 서비스 메서드 호출
-        boolean result = DirectSendService.sendNowSms(receiver, sender, title, message, apiId, apiKey);
-        System.out.println(result);
+        String result = DirectSendService.sendNowSms(receiver, sender, title, message, apiId, apiKey);
+//        System.out.println(result);
         // 결과 검증
-        assertTrue(result, "SMS 전송에 실패했습니다.");
+        String expectedResult = "{\"status\":0,\"msg\":\"Message sent successfully\"}";  // 예상 결과
+        assertEquals(expectedResult, result);
+
     }
 
 

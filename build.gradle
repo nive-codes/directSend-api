@@ -39,6 +39,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.cloud:spring-cloud-starter-function-web' //함수 기반 spring
 	implementation 'org.springframework.cloud:spring-cloud-function-adapter-aws:4.0.0'  // AWS Lambda 어댑터
+	implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'	//aws Lambda core
 }
 
 tasks.named('test') {

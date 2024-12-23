@@ -1,19 +1,27 @@
 package com.api.directsend.request.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+@Slf4j
 public class DirectSendService {
 
     private static final String API_URL = "https://directsend.co.kr/index.php/api_v2/sms_change_word";
 
-    public static boolean sendNowSms(String receiver, String sender, String title, String message, String apiId, String apiKey) {
+    public static String sendNowSms(String receiver, String sender, String title, String message, String apiId, String apiKey) {
         boolean result = false;
         try {
             URL obj = new URL(API_URL);
@@ -40,7 +48,7 @@ public class DirectSendService {
                     "\"type\":\"java\"" +
                     "}";
 
-            System.out.println("Sending JSON: " + urlParameters);
+            log.debug("Sending JSON: " + urlParameters);
 
             // SNI 관련 설정
             System.setProperty("jsse.enableSNIExtension", "false");
@@ -54,28 +62,38 @@ public class DirectSendService {
 
             // 서버로부터의 응답 코드 확인
             int responseCode = con.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
+            log.debug("Response Code: " + responseCode);
+            String response;
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                    responseCode == 200 ? con.getInputStream() : con.getErrorStream(), StandardCharsets.UTF_8))) {
+                response = br.lines().collect(Collectors.joining("\n"));
+            }
+            // 로그 출력
+            log.debug("Response Code: " + responseCode);
+
+            // 결과 반환
             if (responseCode == 200) {
-                result = true;
-            } else {
-                System.out.println("Failed with HTTP error code: " + responseCode);
-            }
-
-            // 응답을 읽어서 출력
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
+                log.debug("test com in");
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, String> responseMap = objectMapper.readValue(response, new TypeReference<>() {});
+//                log.debug("Response Data: " + responseMap.toString());
+                String status = responseMap.get("status");
+                if ("0".equals(status)) {
+                    return "{\"status\":0,\"msg\":\"Message sent successfully\"}";
+                } else {
+                    return "{\"status\":" + status + ",\"msg\":\"Failed to send message: " + responseMap.get("msg") + "\"}";
                 }
-                System.out.println("Response: " + response.toString());
+
+            } else {
+                return "{\"status\":" + responseCode + ",\"msg\":\"Failed to send message\"}"; // 실패 시 JSON 반환
             }
 
-        } catch (Exception e) {
+
+
+        } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return "{\"status\":500,\"msg\":\"" + e.getMessage() + "\"}"; // 예외 상황 JSON 반환
         }
-        return result;
     }
 
 
