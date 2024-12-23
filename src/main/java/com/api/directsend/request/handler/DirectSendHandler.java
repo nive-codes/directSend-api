@@ -14,10 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class DirectSendHandler implements RequestHandler<APIGatewayProxyRequestEvent, ResponseEntity<?>> {
@@ -25,16 +22,22 @@ public class DirectSendHandler implements RequestHandler<APIGatewayProxyRequestE
     @Override
     public ResponseEntity<?> handleRequest(APIGatewayProxyRequestEvent apiGatewayProxyRequestEvent, Context context) {
 
-        log.debug("DirectSendHandler.handleRequest start");
 
-//        String domain = DomainCheckUtil.extractDomain(apiGatewayProxyRequestEvent);      /*요청한 도메인 확인*/
-//
-//        DomainInfo domainInfo = DomainCheckUtil.getDomainInfo(domain);
-//
-//        if (domainInfo == null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body(Collections.singletonMap("error", "Invalid domain"));
-//        }
+        String domain = DomainCheckUtil.extractDomain(apiGatewayProxyRequestEvent);      /*요청한 도메인 확인*/
+
+
+        if(domain == null){
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "Domain is null Invalid domain"));
+        }
+
+        DomainInfo domainInfo = DomainCheckUtil.getDomainInfo(domain);
+
+        if (domainInfo == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "Invalid domain"));
+        }
 
         // 요청 본문(body) 추출
         String body = apiGatewayProxyRequestEvent.getBody();
@@ -56,9 +59,10 @@ public class DirectSendHandler implements RequestHandler<APIGatewayProxyRequestE
                     .body(Collections.singletonMap("error", "An unexpected error occurred"));
         }
 
-
-        /*request.setApiId(domainInfo.getApiId());
-        request.setApiKey(domainInfo.getApiKey());*/
+//
+//        request.setApiId(domainInfo.getApiId());
+//        request.setApiKey(domainInfo.getApiKey());
+//        request.setSender(domainInfo.getSender());
 
 
         try {
@@ -68,6 +72,7 @@ public class DirectSendHandler implements RequestHandler<APIGatewayProxyRequestE
             }
 
             // 요청 값 추출
+            /*검증 이후 DirectSendService.sendNowSms(request)로 발송하도록 수정*/
             String receiver = request.getMobile();
             String sender = request.getSender();
             String message = request.getMessage();
@@ -115,26 +120,4 @@ public class DirectSendHandler implements RequestHandler<APIGatewayProxyRequestE
         }
     }
 
-    // 전화번호를 JSON 배열 형식으로 변환하는 메서드
-    /*Service에서 처리*/
-//    private String convertToReceiverArray(String mobile) {
-//        try {
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            String[] mobiles = mobile.split(",");
-//            return objectMapper.writeValueAsString(
-//                    Arrays.stream(mobiles)
-//                            .map(m -> Collections.singletonMap("mobile", m.trim()))
-//                            .collect(Collectors.toList())
-//            );
-//        } catch (Exception e) {
-//            throw new RuntimeException("Failed to parse receiver JSON", e);
-//        }
-//    }
-
-    // 요청에서 도메인 추출 (예: 헤더나 파라미터에서)
-    private String extractDomainFromRequest(DirectSendRequest request) {
-        // 여기서는 예시로 request.getMobile()를 도메인으로 간주하는 형태로 가정
-        // 실제 도메인 추출 로직은 요청에 맞게 변경해야 함
-        return "example.com";  // 실제 도메인 추출 로직
-    }
 }
