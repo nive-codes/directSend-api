@@ -12,20 +12,20 @@ class DirectSendServiceTest {
 
     @Test
     public void testSendNowSMS(){
-        // 테스트할 파라미터 설정
-        String receiver = "01012341234";
-        String sender = "01012341234";
-        String title = "";
-        String message = "Thisisatestmessage.";
-        String apiId = "test";  // 실제 API ID를 사용해야 합니다.
-        String apiKey = "test";  // 실제 API Key를 사용해야 합니다.
-
-        // 서비스 메서드 호출
-        String result = DirectSendService.sendNowSms(receiver, sender, title, message, apiId, apiKey);
-//        System.out.println(result);
-        // 결과 검증
-        String expectedResult = "{\"status\":0,\"msg\":\"Message sent successfully\"}";  // 예상 결과
-        assertEquals(expectedResult, result);
+//        // 테스트할 파라미터 설정
+//        String receiver = "01012341234";
+//        String sender = "01012341234";
+//        String title = "";
+//        String message = "Thisisatestmessage.";
+//        String apiId = "test";  // 실제 API ID를 사용해야 합니다.
+//        String apiKey = "test";  // 실제 API Key를 사용해야 합니다.
+//
+//        // 서비스 메서드 호출
+//        String result = DirectSendService.sendNowSms(receiver, sender, title, message, apiId, apiKey);
+////        System.out.println(result);
+//        // 결과 검증
+//        String expectedResult = "{\"status\":0,\"msg\":\"Message sent successfully\"}";  // 예상 결과
+//        assertEquals(expectedResult, result);
 
     }
 

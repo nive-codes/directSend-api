@@ -37,10 +37,13 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'org.springframework.cloud:spring-cloud-starter-function-web' //함수 기반 spring
+	implementation 'org.springframework.cloud:spring-cloud-starter-function-web' // 함수 기반 spring
 	implementation 'org.springframework.cloud:spring-cloud-function-adapter-aws:4.0.0'  // AWS Lambda 어댑터
-	implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'	//aws Lambda core
-	implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'	//aws lambda java event -> 도메인 체크
+	implementation 'software.amazon.awssdk:lambda:2.20.0'  // AWS SDK v2 Lambda
+	implementation 'software.amazon.awssdk:s3:2.20.0'  // 필요에 따라 추가적인 AWS 서비스 SDK 추가 가능
+	implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'  // Lambda core
+	implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'  // Lambda 이벤트
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'	// JSON 처리
 }
 
 tasks.named('test') {
