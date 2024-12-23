@@ -12,5 +12,8 @@ public class DirectSendRequest {
     private String apiId;
     private String apiKey;
     private String sender;
+    private String title;
+
+
 
 }

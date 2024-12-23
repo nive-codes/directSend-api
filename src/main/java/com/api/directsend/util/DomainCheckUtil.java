@@ -1,18 +1,39 @@
 package com.api.directsend.util;
 
-import java.util.Collections;
-import java.util.List;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import lombok.Getter;
+import lombok.Setter;
 
-/*허용할 도메인 목록*/
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+// DomainCheckUtil.java
 public class DomainCheckUtil {
 
-    /*list 내부 값 변경 안되는 unmodifiableList로 생성*/
-    public static final List<String> ALLOWED_DOMAINS = Collections.unmodifiableList(
-            List.of("https://dalseoppg.com", "https://allowed-domain2.com")
-    );
+    private static final Map<String, DomainInfo> domainInfoMap = new HashMap<>();
 
-//    ALLOWED_DOMAINS.forEach(domain -> System.out.println("Allowed domain: " + domain));
-//    ALLOWED_DOMAINS.stream()
-//            .filter(domain -> domain.contains("allowed"))  // 필터링 조건
-//            .forEach(domain -> System.out.println("Filtered domain: " + domain));  // 필터링된 리스트 출력
+    static {
+        // 도메인별 API Key, API ID 설정
+        domainInfoMap.put("dalseoppg.com", new DomainInfo("exampleApiKey", "exampleApiId"));
+        domainInfoMap.put("lms.dgmirae.or.kr", new DomainInfo("testApiKey", "testApiId"));
+        domainInfoMap.put("garts.kr", new DomainInfo("testApiKey", "testApiId"));
+        domainInfoMap.put("dmtravel.kr", new DomainInfo("testApiKey", "testApiId"));
+    }
+
+    public static DomainInfo getDomainInfo(String domain) {
+        return domainInfoMap.get(domain);
+    }
+
+
+    // APIGatewayProxyRequestEvent에서 도메인 추출
+    public static String extractDomain(APIGatewayProxyRequestEvent request) {
+        String host = request.getHeaders().get("Host");
+        if (host != null) {
+            return host.split(":")[0];  // 포트번호를 제외한 도메인만 추출
+        }
+        return null;  // 도메인 추출 실패시 null 반환
+    }
 }
+
