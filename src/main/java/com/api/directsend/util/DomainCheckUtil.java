@@ -1,12 +1,8 @@
 package com.api.directsend.util;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 // DomainCheckUtil.java
@@ -16,11 +12,12 @@ public class DomainCheckUtil {
 
     static {
         // 도메인별 API Key, API ID 설정
-        domainInfoMap.put("dalseoppg.com", new DomainInfo("exampleApiKey", "exampleApiId"));
-        domainInfoMap.put("lms.dgmirae.or.kr", new DomainInfo("testApiKey", "testApiId"));
-        domainInfoMap.put("garts.kr", new DomainInfo("testApiKey", "testApiId"));
-        domainInfoMap.put("dmtravel.kr", new DomainInfo("testApiKey", "testApiId"));
+        domainInfoMap.put("dalseoppg.com", new DomainInfo("exampleApiKey", "exampleApiId",""));
+        domainInfoMap.put("lms.dgmirae.or.kr", new DomainInfo("testApiKey", "testApiId",""));
+        domainInfoMap.put("garts.kr", new DomainInfo("testApiKey", "testApiId",""));
+        domainInfoMap.put("dmtravel.kr", new DomainInfo("testApiKey", "testApiId",""));
     }
+
 
     public static DomainInfo getDomainInfo(String domain) {
         return domainInfoMap.get(domain);
@@ -29,7 +26,13 @@ public class DomainCheckUtil {
 
     // APIGatewayProxyRequestEvent에서 도메인 추출
     public static String extractDomain(APIGatewayProxyRequestEvent request) {
-        String host = request.getHeaders().get("Host");
+        String host = "";
+        try{
+            host = request.getHeaders().get("Host");
+        }catch (NullPointerException e){
+            e.getMessage();
+            host = null;
+        }
         if (host != null) {
             return host.split(":")[0];  // 포트번호를 제외한 도메인만 추출
         }
