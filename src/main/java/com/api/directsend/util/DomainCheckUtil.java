@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // DomainCheckUtil.java
+/*domaininfo에 값을 지정, static final을 통한 불변성 보장*/
 public class DomainCheckUtil {
 
     private static final Map<String, DomainInfo> domainInfoMap = new HashMap<>();
@@ -25,6 +26,7 @@ public class DomainCheckUtil {
 
 
     // APIGatewayProxyRequestEvent에서 도메인 추출
+    /*도메인 별 요청 값을 처리하도록 api key, api id, sender 전화번호를 선택하도록 처리*/
     public static String extractDomain(APIGatewayProxyRequestEvent request) {
         String host = "";
         try{

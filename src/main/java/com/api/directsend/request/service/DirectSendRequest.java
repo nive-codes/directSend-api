@@ -4,6 +4,7 @@ package com.api.directsend.request.service;
 import lombok.Getter;
 import lombok.Setter;
 
+/*다이렉트샌드로 요청할 객체 domain*/
 @Getter
 @Setter
 public class DirectSendRequest {
